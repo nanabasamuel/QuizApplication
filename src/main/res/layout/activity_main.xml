@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:padding="20dp"
+            android:padding="10dp"
             android:layout_marginEnd="5dp"
             android:background="@drawable/round_back_white10"
             android:orientation="vertical">
@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:padding="20dp"
+            android:padding="10dp"
             android:layout_marginStart="5dp"
             android:background="@drawable/round_back_white10"
             android:orientation="vertical">
@@ -111,7 +111,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:padding="20dp"
+            android:padding="10dp"
             android:layout_marginEnd="5dp"
             android:background="@drawable/round_back_white10"
             android:orientation="vertical">
@@ -137,7 +137,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:padding="20dp"
+            android:padding="10dp"
             android:layout_marginStart="5dp"
             android:background="@drawable/round_back_white10"
             android:orientation="vertical">
@@ -158,12 +158,77 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- Layout3-->
+    <LinearLayout
+        android:id="@+id/layout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/layout2"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:weightSum="2">
+
+        <LinearLayout
+            android:id="@+id/civilEngineeringLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="10dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/round_back_white10"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/civilengineering3" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Civil Engineering"
+                android:textColor="@color/black_50"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/farmingLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="10dp"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/round_back_white10"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/farming2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Farming"
+                android:textColor="@color/black_50"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/startQuizBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Start Quiz"
-        android:layout_below="@+id/layout2"
+        android:layout_below="@+id/layout3"
         android:layout_marginTop="50dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"

@@ -49,7 +49,7 @@ public class QuizActivity extends AppCompatActivity {
 
         nextBtn = findViewById(R.id.nextBtn);
 
-        final String getSelectedTopicName = getIntent().getStringExtra("selectedTopicName");
+        final String getSelectedTopicName = getIntent().getStringExtra("selectedTopic");
 
         selectedTopicName.setText(getSelectedTopicName);
 
@@ -74,7 +74,7 @@ public class QuizActivity extends AppCompatActivity {
                     selectedAlternativeByUser = alternative1.getText().toString();
 
                     alternative1.setBackgroundResource(R.drawable.round_back_red10);
-                    alternative1.setTextColor(android.R.color.white);
+                    alternative1.setTextColor(Color.WHITE);
 
                     revealAnswer();
 
@@ -93,7 +93,7 @@ public class QuizActivity extends AppCompatActivity {
                     selectedAlternativeByUser = alternative2.getText().toString();
 
                     alternative2.setBackgroundResource(R.drawable.round_back_red10);
-                    alternative2.setTextColor(android.R.color.white);
+                    alternative2.setTextColor(Color.WHITE);
 
                     revealAnswer();
 
@@ -112,7 +112,7 @@ public class QuizActivity extends AppCompatActivity {
                     selectedAlternativeByUser = alternative3.getText().toString();
 
                     alternative3.setBackgroundResource(R.drawable.round_back_red10);
-                    alternative3.setTextColor(android.R.color.white);
+                    alternative3.setTextColor(Color.WHITE);
 
                     revealAnswer();
 
@@ -131,7 +131,7 @@ public class QuizActivity extends AppCompatActivity {
                     selectedAlternativeByUser = alternative4.getText().toString();
 
                     alternative4.setBackgroundResource(R.drawable.round_back_red10);
-                    alternative4.setTextColor(android.R.color.white);
+                    alternative4.setTextColor(Color.WHITE);
 
                     revealAnswer();
 
@@ -306,19 +306,19 @@ public class QuizActivity extends AppCompatActivity {
 
         if (alternative1.getText().toString().equals(getAnswer)) {
             alternative1.setBackgroundResource(R.drawable.round_back_green10);
-            alternative1.setTextColor(android.R.color.white);
+            alternative1.setTextColor(Color.WHITE);
 
         } else if (alternative2.getText().toString().equals(getAnswer)) {
             alternative2.setBackgroundResource(R.drawable.round_back_green10);
-            alternative2.setTextColor(android.R.color.white);
+            alternative2.setTextColor(Color.WHITE);
 
         } else if (alternative3.getText().toString().equals(getAnswer)) {
             alternative3.setBackgroundResource(R.drawable.round_back_green10);
-            alternative3.setTextColor(android.R.color.white);
+            alternative3.setTextColor(Color.WHITE);
 
         } else if (alternative4.getText().toString().equals(getAnswer)) {
             alternative4.setBackgroundResource(R.drawable.round_back_green10);
-            alternative4.setTextColor(android.R.color.white);
+            alternative4.setTextColor(Color.WHITE);
         }
     }
 }
