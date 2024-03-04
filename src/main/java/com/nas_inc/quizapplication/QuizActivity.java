@@ -1,10 +1,11 @@
-package com.example.quizapplication;
+package com.nas_inc.quizapplication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,7 +13,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.window.OnBackInvokedDispatcher;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +33,10 @@ public class QuizActivity extends AppCompatActivity {
     private Timer quizTimer;
     private int totalTimeInMins = 1;
     private int seconds = 0;
-    private List<ListOfQuestions> questionsLists;
+    private List<ListOfQuestions> questionsLists = new ArrayList<>();
     private int currentQuestionPosition =0;
     private String selectedAlternativeByUser = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,20 +56,69 @@ public class QuizActivity extends AppCompatActivity {
 
         nextBtn = findViewById(R.id.nextBtn);
 
+        //get Topic Name and User Name form MainActivity via Intent
         final String getSelectedTopicName = getIntent().getStringExtra("selectedTopic");
 
+        // set Topic name to TextView
         selectedTopicName.setText(getSelectedTopicName);
 
-        questionsLists = QuestionsBank.getQuestions(getSelectedTopicName);
+        //Get questions from firebase Data according to selectedTopicName and assign to questionsLists ArrayList
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://onlinequizapplication-f03bc-default-rtdb.firebaseio.com/");
 
-        startTimer(clockTimer);
+        // show dialog while questions are being fetched
+        ProgressDialog progressDialog = new ProgressDialog(QuizActivity.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
 
-        questions.setText((currentQuestionPosition+1) + "/" + questionsLists.size());
-        question.setText(questionsLists.get(0).getQuestion());
-        alternative1.setText(questionsLists.get(0).getAlternative1());
-        alternative2.setText(questionsLists.get(0).getAlternative2());
-        alternative3.setText(questionsLists.get(0).getAlternative3());
-        alternative4.setText(questionsLists.get(0).getAlternative4());
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                // getting quiz time
+                totalTimeInMins = Integer.parseInt(snapshot.child("time").getValue(String.class));
+
+                // getting all questions from firebase database for a specific topic
+                for (DataSnapshot dataSnapshot : snapshot.child(getSelectedTopicName).getChildren()) {
+
+                    // getting all data from firebase database
+                    final String getQuestion = dataSnapshot.child("question").getValue(String.class);
+                    final String getAlternative1 = dataSnapshot.child("alternative1").getValue(String.class);
+                    final String getAlternative2 = dataSnapshot.child("alternative2").getValue(String.class);
+                    final String getAlternative3 = dataSnapshot.child("alternative3").getValue(String.class);
+                    final String getAlternative4 = dataSnapshot.child("alternative4").getValue(String.class);
+                    final String getAnswer = dataSnapshot.child("answer").getValue(String.class);
+
+                    // adding data to the questionsList
+                    ListOfQuestions listOfQuestions = new ListOfQuestions(getQuestion, getAlternative1, getAlternative2, getAlternative3, getAlternative4, getAnswer, "");
+                    //WILL COME CHECK
+                    questionsLists.add((ListOfQuestions) questionsLists);
+                }
+
+                // hide dialog
+                progressDialog.hide();
+
+                //set current question to TextView along with alternatives from questionsLists ArrayList
+                questions.setText((currentQuestionPosition+1) + "/" + questionsLists.size());
+                question.setText(questionsLists.get(currentQuestionPosition).getQuestion());
+                alternative1.setText(questionsLists.get(currentQuestionPosition).getAlternative1());
+                alternative2.setText(questionsLists.get(currentQuestionPosition).getAlternative2());
+                alternative3.setText(questionsLists.get(currentQuestionPosition).getAlternative3());
+                alternative4.setText(questionsLists.get(currentQuestionPosition).getAlternative4());
+
+                // start quiz countdown timer after data has fetched from firebase
+                startTimer(clockTimer);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        // I used QuestionsBank for the offline version of this app so i won't need it here
+        // questionsLists = QuestionsBank.getQuestions(getSelectedTopicName);
+
 
         alternative1.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "741904172990",
+    "project_id": "onlinequizapplication-f03bc",
+    "storage_bucket": "onlinequizapplication-f03bc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:741904172990:android:aa03bd433b29b65b74dbef",
+        "android_client_info": {
+          "package_name": "com.nas_inc.quizapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBe5VPPVBPRiguLINOKRXbPSEGGs2NrAWQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

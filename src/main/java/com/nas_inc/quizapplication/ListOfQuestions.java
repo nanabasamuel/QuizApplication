@@ -1,4 +1,4 @@
-package com.example.quizapplication;
+package com.nas_inc.quizapplication;
 
 public class ListOfQuestions {
     private  String question, alternative1, alternative2, alternative3, alternative4, answer;

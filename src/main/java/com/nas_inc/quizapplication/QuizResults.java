@@ -1,4 +1,4 @@
-package com.example.quizapplication;
+package com.nas_inc.quizapplication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
