@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:text="00:59"
+                android:text="03:00"
                 android:textColor="@color/blue" />
         </LinearLayout>
     </RelativeLayout>
@@ -67,7 +67,7 @@
         android:gravity="center"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
-        android:text="1/10"
+        android:text="1/15"
         android:textColor="@color/blue" />
 
     <TextView

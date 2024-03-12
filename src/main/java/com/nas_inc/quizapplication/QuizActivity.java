@@ -14,12 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -31,9 +25,9 @@ public class QuizActivity extends AppCompatActivity {
     private AppCompatButton alternative1, alternative2, alternative3, alternative4;
     private AppCompatButton nextBtn;
     private Timer quizTimer;
-    private int totalTimeInMins = 1;
+    private int totalTimeInMins = 2;
     private int seconds = 0;
-    private List<ListOfQuestions> questionsLists = new ArrayList<>();
+    private List<ListOfQuestions> questionsLists;
     private int currentQuestionPosition =0;
     private String selectedAlternativeByUser = "";
 
@@ -62,63 +56,19 @@ public class QuizActivity extends AppCompatActivity {
         // set Topic name to TextView
         selectedTopicName.setText(getSelectedTopicName);
 
-        //Get questions from firebase Data according to selectedTopicName and assign to questionsLists ArrayList
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://onlinequizapplication-f03bc-default-rtdb.firebaseio.com/");
+        //Get questions from QuestionBank according to selectedTopicName and assign to questionsLists ArrayList
+        questionsLists =QuestionsBank.getQuestions(getSelectedTopicName);
 
-        // show dialog while questions are being fetched
-        ProgressDialog progressDialog = new ProgressDialog(QuizActivity.this);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();
+        // start quiz countdown timer
+        startTimer(clockTimer);
 
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                // getting quiz time
-                totalTimeInMins = Integer.parseInt(snapshot.child("time").getValue(String.class));
-
-                // getting all questions from firebase database for a specific topic
-                for (DataSnapshot dataSnapshot : snapshot.child(getSelectedTopicName).getChildren()) {
-
-                    // getting all data from firebase database
-                    final String getQuestion = dataSnapshot.child("question").getValue(String.class);
-                    final String getAlternative1 = dataSnapshot.child("alternative1").getValue(String.class);
-                    final String getAlternative2 = dataSnapshot.child("alternative2").getValue(String.class);
-                    final String getAlternative3 = dataSnapshot.child("alternative3").getValue(String.class);
-                    final String getAlternative4 = dataSnapshot.child("alternative4").getValue(String.class);
-                    final String getAnswer = dataSnapshot.child("answer").getValue(String.class);
-
-                    // adding data to the questionsList
-                    ListOfQuestions listOfQuestions = new ListOfQuestions(getQuestion, getAlternative1, getAlternative2, getAlternative3, getAlternative4, getAnswer, "");
-                    //WILL COME CHECK
-                    questionsLists.add((ListOfQuestions) questionsLists);
-                }
-
-                // hide dialog
-                progressDialog.hide();
-
-                //set current question to TextView along with alternatives from questionsLists ArrayList
-                questions.setText((currentQuestionPosition+1) + "/" + questionsLists.size());
-                question.setText(questionsLists.get(currentQuestionPosition).getQuestion());
-                alternative1.setText(questionsLists.get(currentQuestionPosition).getAlternative1());
-                alternative2.setText(questionsLists.get(currentQuestionPosition).getAlternative2());
-                alternative3.setText(questionsLists.get(currentQuestionPosition).getAlternative3());
-                alternative4.setText(questionsLists.get(currentQuestionPosition).getAlternative4());
-
-                // start quiz countdown timer after data has fetched from firebase
-                startTimer(clockTimer);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        // I used QuestionsBank for the offline version of this app so i won't need it here
-        // questionsLists = QuestionsBank.getQuestions(getSelectedTopicName);
-
+        //set current question to TextView along with alternatives from questionsLists ArrayList
+        questions.setText((currentQuestionPosition+1) + "/" + questionsLists.size());
+        question.setText(questionsLists.get(0).getQuestion());
+        alternative1.setText(questionsLists.get(0).getAlternative1());
+        alternative2.setText(questionsLists.get(0).getAlternative2());
+        alternative3.setText(questionsLists.get(0).getAlternative3());
+        alternative4.setText(questionsLists.get(0).getAlternative4());
 
         alternative1.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
@@ -263,54 +213,56 @@ public class QuizActivity extends AppCompatActivity {
             finish();
         }
     }
-    private void startTimer(TextView timerTextViw) {
+
+    private void startTimer(TextView timerTextView) {
         quizTimer = new Timer();
 
         quizTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (seconds == 0) {
-                    totalTimeInMins--;
-                    seconds = 59;
-                } else if (seconds == 0 && totalTimeInMins == 0) {
-
-                    quizTimer.purge();
+                if (totalTimeInMins == 0 && seconds == 0) {
                     quizTimer.cancel();
-
-                    Toast.makeText(QuizActivity.this, "Time Over", Toast.LENGTH_SHORT).show();
-
-                    Intent intent = new Intent(QuizActivity.this, QuizResults.class);
-                    intent.putExtra("correct", getCorrectAnswer());
-                    intent.putExtra("incorrect", getIncorrectAnswers());
-                    startActivity(intent);
-
-                    finish();
-                }
-                else {
-                    seconds--;
-                }
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        String finalMinutes = String.valueOf(totalTimeInMins);
-                        String finalSeconds = String.valueOf(seconds);
-
-                        if (finalMinutes.length() == 1) {
-                            finalMinutes = "0" + finalMinutes;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(QuizActivity.this, "Time Over", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(QuizActivity.this, QuizResults.class);
+                            intent.putExtra("correct", getCorrectAnswer());
+                            intent.putExtra("incorrect", getIncorrectAnswers());
+                            startActivity(intent);
+                            finish();
                         }
-
-                        if (finalSeconds.length() == 1) {
-                            finalSeconds = "0" + finalSeconds;
-                        }
-
-                        timerTextViw.setText(finalMinutes + ":" + finalSeconds);
+                    });
+                } else {
+                    if (seconds == 0) {
+                        totalTimeInMins--;
+                        seconds = 59;
+                    } else {
+                        seconds--;
                     }
-                });
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String finalMinutes = String.valueOf(totalTimeInMins);
+                            String finalSeconds = String.valueOf(seconds);
+
+                            if (finalMinutes.length() == 1) {
+                                finalMinutes = "0" + finalMinutes;
+                            }
+
+                            if (finalSeconds.length() == 1) {
+                                finalSeconds = "0" + finalSeconds;
+                            }
+
+                            timerTextView.setText(finalMinutes + ":" + finalSeconds);
+                        }
+                    });
+                }
             }
-        },1000, 1000);
+        }, 0, 1000); // Start immediately, repeat every second
     }
+
 
     private int getCorrectAnswer() {
         int correctAnswers = 0;
@@ -336,7 +288,7 @@ public class QuizActivity extends AppCompatActivity {
             final String getUserSelectedAnswer = questionsLists.get(i).getUserSelectedAnswer();
             final String getAnswer = questionsLists.get(i).getAnswer();
 
-            if (getUserSelectedAnswer.equals(getAnswer)) {
+            if (!getUserSelectedAnswer.equals(getAnswer)) {
                 correctAnswers++;
             }
         }
